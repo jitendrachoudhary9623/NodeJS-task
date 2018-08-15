@@ -122,7 +122,7 @@ but its not working if i do vice versa
 */
 
     //res.json(JSON.parse(saveFile.read(path)));
-   // res.json(JSON.parse(saveFile.save(fileContent)));
+    saveFile.save(fileContent);
     res.json(JSON.parse("{\"success\":{\"message\":\"Message saved \"}}"));
    // next(new Error("Unable to send mail"));
   }
