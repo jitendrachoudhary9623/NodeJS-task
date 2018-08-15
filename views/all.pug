@@ -1,0 +1,19 @@
+extends layout.pug
+block heading
+    br
+    h5(align="center") #{display}
+    br
+block content
+    table(class="table")
+        th Name
+        th EmailID
+        th Date of birth
+        th Age
+        for i in d
+            tr
+                td #{i.name}
+                td #{i.email}
+                td #{i.dob}
+                td #{i.age}
+    br
+    br        

@@ -15,18 +15,37 @@ var path = "a.json"; // path of json file
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static('public'))  //loads static content
+app.set('view engine', 'pug');
 
 //GET,POST REQUESTS
 
+app.get("/form",(req,res)=>{
+  res.render('index');
+
+});
 app.get("/", (req, res) => {
-  res.json(JSON.parse(saveFile.read(path)));
+  var data1=JSON.parse(saveFile.read(path));
+ res.json(JSON.parse(saveFile.read(path)));
+/* res.render("all",{
+  display:"All Data from the json file.",
+  d: data1.data
+});
+*/
 });
 
 app.get("/latest", (req, res) => {
   var data1 = JSON.parse(saveFile.read(path));
   //console.log(data1);
+
   var lastElement = data1.data[data1.data.length - 1];
-  res.json(lastElement);
+ res.json(lastElement);
+/*
+  res.render("all",{
+    display:"Latest Entry",
+    d: data1.data[data1.data.length - 1]
+  });
+  */
 });
 
 app.get("/:number", (req, res, next) => {
@@ -103,8 +122,9 @@ but its not working if i do vice versa
 */
 
     //res.json(JSON.parse(saveFile.read(path)));
-    res.json(JSON.parse(saveFile.save(fileContent)));
-    // next(new Error("Unable to send mail"));
+   // res.json(JSON.parse(saveFile.save(fileContent)));
+    res.json(JSON.parse("{\"success\":{\"message\":\"Message saved \"}}"));
+   // next(new Error("Unable to send mail"));
   }
 });
 
