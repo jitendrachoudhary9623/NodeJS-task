@@ -48,7 +48,6 @@ function appendToFile(fileContent) {
     }
   });
 
-  console.log("Why its not passing" + fileContent.email.toString());
 
   //mail.sendMail(fileContent.email);
   //reading the content and sending the response of t he file
