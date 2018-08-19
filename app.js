@@ -25,11 +25,6 @@ app.get("/form", (req, res) => {
 });
 app.get("/", (req, res) => {
   res.json(JSON.parse(saveFile.read(path)));
-  /* res.render("all",{
-  display:"All Data from the json file.",
-  d: data1.data
-});
-*/
 });
 
 app.get("/latest", (req, res) => {
@@ -38,19 +33,13 @@ app.get("/latest", (req, res) => {
 
   var lastElement = data1.data[data1.data.length - 1];
   res.json(lastElement);
-  /*
-  res.render("all",{
-    display:"Latest Entry",
-    d: data1.data[data1.data.length - 1]
-  });
-  */
 });
 
 app.get("/:number", (req, res, next) => {
   var data1 = JSON.parse(saveFile.read(path));
   var num = req.params.number;
   if (num > data1.data.length || num <= 0) {
-    next(new Error("404 Not Found"));
+    return next(new Error("404 Not Found"));
   } else {
     res.json(data1.data[num - 1]);
   }
@@ -72,8 +61,8 @@ app.post("/", (req, res, next) => {
   //checks the name if valid
   //if spaces are not allowed remove a extra space which is specified in the regex given below
   if (/[^a-zA-Z ]/.test(name)) {
-    var err=new Error("Invalid Name");
-    err.status=400;
+    var err = new Error("Invalid Name");
+    err.status = 400;
     return next(err);
     console.log("this should not execute");
   }
@@ -83,8 +72,8 @@ app.post("/", (req, res, next) => {
   var email_regex = /^([a-zA-Z0-9+_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   //testing the regex with the email provided by user
   if (!email_regex.test(email)) {
-    var err=new Error("Invalid Email");
-    err.status=400;
+    var err = new Error("Invalid Email");
+    err.status = 400;
     return next(err);
   }
 
@@ -151,7 +140,6 @@ function sendMail(fileContent) {
   };
 
   var msg = mailgun.messages().send(data, function(err, res) {
-    console.log(res);
     return false;
   });
   return true;
@@ -160,7 +148,7 @@ function sendMail(fileContent) {
 app.use((req, res, next) => {
   var err = new Error("Not Found");
   err.status = 404;
-  next(err);
+  return next(err);
 });
 
 //Error Handler
@@ -174,6 +162,6 @@ app.use((err, req, res, next) => {
 });
 
 //exporting for test
-module.exports = app.listen(3012, () => {
+module.exports = app.listen(3010, () => {
   console.log("The app is running on port number 3010");
 });
