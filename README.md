@@ -2,6 +2,8 @@
 
 # End points
 
+## For Running Tests
+### Use npm test
 ### Please add your mailgun api keys on line number 10 for variables var api_key = "your apikey here ";var domain = "your domain here";
 ## The app works on port number 3010 
   - http://localhost:3010/form
