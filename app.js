@@ -25,7 +25,6 @@ app.get("/form",(req,res)=>{
 
 });
 app.get("/", (req, res) => {
-  var data1=JSON.parse(saveFile.read(path));
  res.json(JSON.parse(saveFile.read(path)));
 /* res.render("all",{
   display:"All Data from the json file.",
@@ -79,7 +78,7 @@ app.post("/", (req, res, next) => {
   var email = req.body.email;
 
   //Regex for email
-  var email_regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  var email_regex = /^([a-zA-Z0-9+_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   //testing the regex with the email provided by user
   if (!email_regex.test(email)) {
     next(new Error("Invalid Email"));
@@ -111,21 +110,20 @@ app.post("/", (req, res, next) => {
 
   //first the mail is sent
   var check = sendMail(fileContent);
-  if (check) {
-    //should  not save
-    res.json(JSON.parse(saveFile.save(fileContent)));
-  } else {
-    //should save
-    /*
-This always execute because the function is always returning false
-but its not working if i do vice versa
-*/
 
-    //res.json(JSON.parse(saveFile.read(path)));
-    saveFile.save(fileContent);
-    res.json(JSON.parse("{\"success\":{\"message\":\"Message saved \"}}"));
-   // next(new Error("Unable to send mail"));
-  }
+    if(check===true){
+      res.json({
+        success: {
+          message: "Email Successfully Sent to "+email
+        }
+      });
+        }else{
+      next(new Error("Unable to send Email"));
+    }
+
+
+    //next(new Error("Unable to send mail"));
+  
 });
 
 /*
@@ -148,11 +146,12 @@ function sendMail(fileContent) {
     }\n\n`
   };
 
-  mailgun.messages().send(data, function(err, res) {
+  var msg=mailgun.messages().send(data, function(err, res) {
     console.log(res);
-    return true;
+    return false;
   });
-  return false;
+  console.log(msg);
+  return true;
 }
 //catch error 404 and handles it
 app.use((req, res, next) => {
@@ -170,6 +169,7 @@ app.use((err, req, res, next) => {
     }
   });
 });
+
 
 app.listen(3010, () => {
   console.log("The app is running on port number 3010");
