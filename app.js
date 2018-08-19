@@ -112,6 +112,7 @@ app.post("/", (req, res, next) => {
   var check = sendMail(fileContent);
 
     if(check===true){
+      saveFile.save(fileContent);
       res.json({
         success: {
           message: "Email Successfully Sent to "+email
