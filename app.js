@@ -39,7 +39,9 @@ app.get("/:number", (req, res, next) => {
   var data1 = JSON.parse(saveFile.read(path));
   var num = req.params.number;
   if (num > data1.data.length || num <= 0) {
-    return next(new Error("404 Not Found"));
+    var e=new Error("404 Not Found");
+    e.status=404;
+    return next(e);
   } else {
     res.json(data1.data[num - 1]);
   }
@@ -165,3 +167,4 @@ app.use((err, req, res, next) => {
 module.exports = app.listen(3010, () => {
   console.log("The app is running on port number 3010");
 });
+
