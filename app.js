@@ -72,7 +72,9 @@ app.post("/", (req, res, next) => {
   //checks the name if valid
   //if spaces are not allowed remove a extra space which is specified in the regex given below
   if (/[^a-zA-Z ]/.test(name)) {
-    return next(new Error("Invalid Name"));
+    var err=new Error("Invalid Name");
+    err.status=400;
+    return next(err);
     console.log("this should not execute");
   }
   var email = req.body.email;
@@ -81,7 +83,9 @@ app.post("/", (req, res, next) => {
   var email_regex = /^([a-zA-Z0-9+_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   //testing the regex with the email provided by user
   if (!email_regex.test(email)) {
-    return next(new Error("Invalid Email"));
+    var err=new Error("Invalid Email");
+    err.status=400;
+    return next(err);
   }
 
   //The below code checks if dob is given or not
@@ -169,6 +173,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(3010, () => {
+//exporting for test
+module.exports = app.listen(3012, () => {
   console.log("The app is running on port number 3010");
 });
