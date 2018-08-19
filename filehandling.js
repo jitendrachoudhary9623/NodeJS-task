@@ -11,7 +11,6 @@ create the file and push the data to the file
 
 */
 function appendToFile(fileContent) {
-  var contents;
 
   //checking if the fle with path exists or not
   fs.exists(path, function(exists) {

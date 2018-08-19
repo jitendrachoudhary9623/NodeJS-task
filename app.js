@@ -15,18 +15,17 @@ var path = "a.json"; // path of json file
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static('public'))  //loads static content
-app.set('view engine', 'pug');
+app.use(express.static("public")); //loads static content
+app.set("view engine", "pug");
 
 //GET,POST REQUESTS
 
-app.get("/form",(req,res)=>{
-  res.render('index');
-
+app.get("/form", (req, res) => {
+  res.render("index");
 });
 app.get("/", (req, res) => {
- res.json(JSON.parse(saveFile.read(path)));
-/* res.render("all",{
+  res.json(JSON.parse(saveFile.read(path)));
+  /* res.render("all",{
   display:"All Data from the json file.",
   d: data1.data
 });
@@ -38,8 +37,8 @@ app.get("/latest", (req, res) => {
   //console.log(data1);
 
   var lastElement = data1.data[data1.data.length - 1];
- res.json(lastElement);
-/*
+  res.json(lastElement);
+  /*
   res.render("all",{
     display:"Latest Entry",
     d: data1.data[data1.data.length - 1]
@@ -73,7 +72,8 @@ app.post("/", (req, res, next) => {
   //checks the name if valid
   //if spaces are not allowed remove a extra space which is specified in the regex given below
   if (/[^a-zA-Z ]/.test(name)) {
-    next(new Error("Invalid Name"));
+    return next(new Error("Invalid Name"));
+    console.log("this should not execute");
   }
   var email = req.body.email;
 
@@ -81,7 +81,7 @@ app.post("/", (req, res, next) => {
   var email_regex = /^([a-zA-Z0-9+_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   //testing the regex with the email provided by user
   if (!email_regex.test(email)) {
-    next(new Error("Invalid Email"));
+    return next(new Error("Invalid Email"));
   }
 
   //The below code checks if dob is given or not
@@ -96,7 +96,9 @@ app.post("/", (req, res, next) => {
 
     //Validating the age
     if (age < 0 || age < 16 || age >= 120) {
-      next(new Error("Enter a valid age , Valid age is inbetween 16 and 120."));
+      return next(
+        new Error("Enter a valid age , Valid age is inbetween 16 and 120.")
+      );
     } else {
       dob = req.body.dob;
     }
@@ -104,27 +106,24 @@ app.post("/", (req, res, next) => {
     //If date is not mentioned
     dob = "Not mentioned";
   }
-
   //This will be given for saving in the text file
   var fileContent = { name: name, email: email, dob: req.body.dob, age: age };
 
   //first the mail is sent
   var check = sendMail(fileContent);
 
-    if(check===true){
-      saveFile.save(fileContent);
-      res.json({
-        success: {
-          message: "Email Successfully Sent to "+email
-        }
-      });
-        }else{
-      next(new Error("Unable to send Email"));
-    }
+  if (check === true) {
+    saveFile.save(fileContent);
+    res.json({
+      success: {
+        message: "Email Successfully Sent to " + email
+      }
+    });
+  } else {
+    return next(new Error("Unable to send Email"));
+  }
 
-
-    //next(new Error("Unable to send mail"));
-  
+  //next(new Error("Unable to send mail"));
 });
 
 /*
@@ -147,11 +146,10 @@ function sendMail(fileContent) {
     }\n\n`
   };
 
-  var msg=mailgun.messages().send(data, function(err, res) {
+  var msg = mailgun.messages().send(data, function(err, res) {
     console.log(res);
     return false;
   });
-  console.log(msg);
   return true;
 }
 //catch error 404 and handles it
@@ -170,7 +168,6 @@ app.use((err, req, res, next) => {
     }
   });
 });
-
 
 app.listen(3010, () => {
   console.log("The app is running on port number 3010");
