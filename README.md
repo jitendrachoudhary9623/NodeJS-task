@@ -1,5 +1,11 @@
 # NodeJS-task
 
+## Steps to Install
+### App
+ --- Use npm install 
+ --- npm start  to start the application
+### Test Cases
+  --- npm test
 # End points
 
 ## For Running Tests
