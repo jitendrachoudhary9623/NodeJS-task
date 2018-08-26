@@ -68,13 +68,15 @@ describe("checking form post request ",function(){
 });
 
 describe("data validation ",function(){
-    let invalid_data = {"name":"12","email":"1@1.com","dob":"21/05/1802"}
+    let invalid_name = {"name":"12","email":"1@1.com","dob":"21/05/1802"}
+    let invalid_email = {"name":"ABC","email":"1@1","dob":"21/05/1802"}
+    let invalid_dob = {"name":"ABC","email":"1@1.com","dob":"21/05/2022"}
     let valid_data = {"name":"ABC","email":"abc@gmail.com.com","dob":"21/05/1997"}
 
     it('invalid name',function(done){
         request(app)
         .post('/')
-        .send(invalid_data)
+        .send(invalid_name)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(500)
@@ -84,43 +86,21 @@ describe("data validation ",function(){
             done();
         });
     });
+
     it('invalid email',function(done){
         request(app)
         .post('/')
-        .send(invalid_data)
+        .send(invalid_email)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(500)
         .end((err,res) => {
             res.body.should.have.property('error'); 
+            res.body.error.should.have.property('message').eql('Invalid Email');
             done();
         });
     });
-    it('invalid date of birth',function(done){
-        request(app)
-        .post('/')
-        .send(invalid_data)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(500)
-        .end((err,res) => {
-            res.body.should.have.property('error'); 
-
-            done();
-        });
-    });
-    it('valid name',function(done){
-        request(app)
-        .post('/')
-        .send(valid_data)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(400)
-        .end((err,res) => {
-            res.body.should.have.property('success'); 
-            done();
-        });
-    });
+    
     it('valid email',function(done){
         request(app)
         .post('/')
