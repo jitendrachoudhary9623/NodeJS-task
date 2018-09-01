@@ -109,34 +109,10 @@ app.post("/", (req, res, next) => {
   //This will be given for saving in the text file
   var fileContent = { name: name, email: email, dob: req.body.dob, age: age };
 
-  //first the mail is sent
-  var check = sendMail(fileContent);
-
-  if (check === true) {
-    saveFile.save(fileContent);
-    res.json({
-      success: {
-        message: "Email Successfully Sent to " + email
-      }
-    });
-  } else {
-    return next(new Error("Unable to send Email"));
-  }
-
-  //next(new Error("Unable to send mail"));
-});
-
-/*
-################################################################################
-
-Sends mail using mail-gun
-################################################################################
-
-*/
-function sendMail(fileContent) {
   var from_who =
     "postmaster@sandbox522f221c460e4f9791220f60867d5f4e.mailgun.org";
 
+  //data to be sent
   var data = {
     from: from_who,
     to: `${fileContent.email}`,
@@ -146,11 +122,22 @@ function sendMail(fileContent) {
     }\n\n`
   };
 
-  var msg = mailgun.messages().send(data, function(err, res) {
-    return false;
+  //email sending using mail gun
+  var msg = mailgun.messages().send(data, function(err, body) {
+
+    //If any error 
+    if (err) {
+      var err = new Error("Unable to send");
+      err.status = 400;
+      return next(err);
+    } else {
+
+      //If success
+      res.json({success:{body}});
+    }
   });
-  return true;
-}
+});
+
 //catch error 404 and handles it
 app.use((req, res, next) => {
   var err = new Error("Not Found");
@@ -169,6 +156,6 @@ app.use((err, req, res, next) => {
 });
 
 //exporting for test
-module.exports = app.listen(3010, () => {
+module.exports = app.listen(3013, () => {
   console.log("The app is running on port number 3010");
 });
