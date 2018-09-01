@@ -156,6 +156,6 @@ app.use((err, req, res, next) => {
 });
 
 //exporting for test
-module.exports = app.listen(3013, () => {
+module.exports = app.listen(3010, () => {
   console.log("The app is running on port number 3010");
 });
