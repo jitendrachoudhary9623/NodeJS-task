@@ -170,10 +170,12 @@ describe("Integration Test", function() {
 });
 
 describe("Integration testing with latest route", function() {
+ 
+ //Test for valid data
   describe("For Valid Data ", function() {
     let valid_data = {
       name: "ABC",
-      email: "jitendra93266@gmail.com",
+      email: "Jitendra93266@gmail.com",
       dob: "21/05/1997"
     };
     describe("data validation ", function() {
@@ -205,6 +207,76 @@ describe("Integration testing with latest route", function() {
               "Email correct"
             );
             assert.equal(valid_data.dob, res.body.latest.dob, "DOB correct");
+
+            done();
+          });
+      });
+    });
+  });
+
+
+  //Test for invalid data
+  describe("For InValid Data ", function() {
+    describe("data validation ", function() {
+      it("invalid name", function(done) {
+        let data2 = {
+          name: "PQR1",
+          email: "jitendra93266@gmail.com",
+          dob: ""
+        };
+        request(app)
+          .post("/")
+          .send(data2)
+          .set("Accept", "application/json")
+          .expect("Content-Type", /json/)
+          .expect(404)
+          .end((err, res) => {
+            res.body.should.have.property("error");
+            done();
+          });
+      });
+
+      it("invalid email", function(done) {
+        let data2 = {
+          name: "PQR",
+          email: "jitendra93266gmail.com",
+          dob: ""
+        };
+        request(app)
+          .post("/")
+          .send(data2)
+          .set("Accept", "application/json")
+          .expect("Content-Type", /json/)
+          .expect(404)
+          .end((err, res) => {
+            res.body.should.have.property("error");
+            done();
+          });
+      });
+    });
+    describe("latest route", function() {
+      let data2 = {
+        name: "PQR",
+        email: "jitendra93266@gmail.com",
+        dob: ""
+      };
+      it("checking latest data", function(done) {
+        request(app)
+          .get("/latest")
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .end((err, res) => {
+            assert.notEqual(
+              data2.name,
+              res.body.latest.name,
+              "Name  incorrect"
+            );
+            assert.notEqual(
+              data2.email,
+              res.body.latest.email,
+              "Email incorrect"
+            );
+            assert.notEqual(data2.dob, res.body.latest.dob, "DOB incorrect");
 
             done();
           });
