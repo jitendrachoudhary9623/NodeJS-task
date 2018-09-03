@@ -131,7 +131,7 @@ app.post("/", (req, res, next) => {
       err.status = 400;
       return next(err);
     } else {
-
+      saveFile.save(fileContent);
       //If success
       res.json({success:{body}});
     }

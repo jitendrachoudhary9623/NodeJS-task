@@ -143,11 +143,13 @@ the user enters.
 
 
 */
+var a = 1;
 describe("Integration Test", function() {
-  for (var i = 1; i < 120; i++) {
-    it("checks if we get data at " + i, function(done) {
+  it(
+    "checks if we get data at " + a,
+    function(done) {
       request(app)
-        .get("/" + i) //if I remove i and place values like 6 the value of i is correctly incremented else it is always finging content at 120
+        .get("/" + a) //if I remove i and place values like 6 the value of i is correctly incremented else it is always finging content at 120
         .expect("Content-Type", /json/)
         .expect(200)
         .end((err, res) => {
@@ -155,11 +157,58 @@ describe("Integration Test", function() {
             console.log("h");
           }
           describe("after first test case this will execute", function() {
-            console.log('here comes '+i);
+            console.log("here comes " + a);
+            a++;
+            console.log(a);
           });
         });
 
       done();
+    },
+    500
+  );
+});
+
+describe("Integration testing with latest route", function() {
+  describe("For Valid Data ", function() {
+    let valid_data = {
+      name: "ABC",
+      email: "jitendra93266@gmail.com",
+      dob: "21/05/1997"
+    };
+    describe("data validation ", function() {
+      it("valid data", function(done) {
+        request(app)
+          .post("/")
+          .send(valid_data)
+          .set("Accept", "application/json")
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .end((err, res) => {
+            res.body.should.have.property("success");
+            done();
+          });
+      });
     });
-  }
+
+    describe("latest route", function() {
+      it("checking latest data", function(done) {
+        request(app)
+          .get("/latest")
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .end((err, res) => {
+            assert.equal(valid_data.name, res.body.latest.name, "Name correct");
+            assert.equal(
+              valid_data.email,
+              res.body.latest.email,
+              "Email correct"
+            );
+            assert.equal(valid_data.dob, res.body.latest.dob, "DOB correct");
+
+            done();
+          });
+      });
+    });
+  });
 });
