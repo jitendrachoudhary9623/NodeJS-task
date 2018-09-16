@@ -6,6 +6,8 @@
  --- npm start  to start the application
 ### Test Cases
   --- npm test
+  -----This will run integrationTest.js
+  --- to test other test cases please make changes in package.json , replace integrationTest.js with routeTest.js in scripts/test
 # End points
 
 ## For Running Tests
