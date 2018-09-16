@@ -27,7 +27,9 @@ function appendToFile(fileContent) {
       //join the data array again
       var text = data.join(",");
       //and handle the json format
+      text = text.replace(",    ]", "]");
       text = text.replace(",]", "]");
+
       //writting the the data to the file
       fs.writeFile(path, text, "ascii", function(err) {
         if (err) return console.log(err);

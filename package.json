@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node_modules/.bin/nodemon app.js",
     "serve": "nodemon app.js",
-    "test": "mocha 'test/routeTest.js'"
+    "test": "mocha 'test/integrationTest.js'"
+  
   },
   "keywords": [],
   "author": "",

@@ -6,6 +6,9 @@ var assert = require("assert");
 var expect = chai.expect;
 var should = chai.should();
 var not = chai.not;
+
+var async = require("async");
+
 describe("gets all data", function() {
   it("checks if we get all data", function(done) {
     request(app)
@@ -144,34 +147,9 @@ the user enters.
 
 */
 var a = 1;
-describe("Integration Test", function() {
-  it(
-    "checks if we get data at " + a,
-    function(done) {
-      request(app)
-        .get("/" + a) //if I remove i and place values like 6 the value of i is correctly incremented else it is always finging content at 120
-        .expect("Content-Type", /json/)
-        .expect(200)
-        .end((err, res) => {
-          if (res.body.should.have.property("0")) {
-            console.log("h");
-          }
-          describe("after first test case this will execute", function() {
-            console.log("here comes " + a);
-            a++;
-            console.log(a);
-          });
-        });
-
-      done();
-    },
-    500
-  );
-});
 
 describe("Integration testing with latest route", function() {
- 
- //Test for valid data
+  //Test for valid data
   describe("For Valid Data ", function() {
     let valid_data = {
       name: "ABC",
@@ -213,7 +191,6 @@ describe("Integration testing with latest route", function() {
       });
     });
   });
-
 
   //Test for invalid data
   describe("For InValid Data ", function() {

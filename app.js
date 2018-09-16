@@ -96,9 +96,11 @@ app.post("/", (req, res, next) => {
 
     //Validating the age
     if (age < 0 || age < 16 || age >= 120) {
-      return next(
-        new Error("Enter a valid age , Valid age is inbetween 16 and 120.")
+      var err = new Error(
+        "Enter a valid age , Valid age is inbetween 16 and 120."
       );
+      err.status = 400;
+      return next(err);
     } else {
       dob = req.body.dob;
     }
@@ -124,8 +126,7 @@ app.post("/", (req, res, next) => {
 
   //email sending using mail gun
   var msg = mailgun.messages().send(data, function(err, body) {
-
-    //If any error 
+    //If any error
     if (err) {
       var err = new Error("Unable to send");
       err.status = 400;
@@ -133,7 +134,7 @@ app.post("/", (req, res, next) => {
     } else {
       saveFile.save(fileContent);
       //If success
-      res.json({success:{body}});
+      res.json({ success: { body } });
     }
   });
 });
@@ -156,6 +157,6 @@ app.use((err, req, res, next) => {
 });
 
 //exporting for test
-module.exports = app.listen(3010, () => {
+module.exports = app.listen(3011, () => {
   console.log("The app is running on port number 3010");
 });
